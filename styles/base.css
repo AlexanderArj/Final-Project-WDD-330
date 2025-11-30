@@ -31,7 +31,7 @@ body {
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
     aspect-ratio: 1 / 1;
-    width: min(320px, 500px);
+    width: min(320px, 800px);
     margin: 0 auto;
 
     border: solid 10px #804f4fdc;
