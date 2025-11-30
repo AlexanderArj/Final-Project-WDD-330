@@ -1,11 +1,15 @@
-html {
-    text-align: center;
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    max-height: 800px;
-    margin: 0 auto;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 
@@ -15,11 +19,11 @@ body {
 }
 
 .dark {
-    background-color: rgb(147, 80, 29);
+    background-color: #46494C;
 }
 
 .white {
-    background-color: #f3fcfbfb;
+    background-color: #C5C3C6;
 }
 
 #chess-board {
@@ -51,6 +55,18 @@ body {
     margin-left: calc(5%);
     margin-top: 5px;
 }
+
+#volumeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+#volumeIcon {
+  width: 32px;
+  height: 32px;
+}
+
 
 /* .piece img {
     display: flex;

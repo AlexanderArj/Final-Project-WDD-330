@@ -6,7 +6,6 @@ export default class Board {
 
     init() {
         this.buildBoard(this.squares, this.boardContainer);
-        this.squareReference();
     }
 
     buildBoard(squares, container) {
@@ -18,20 +17,6 @@ export default class Board {
             squareContainer.dataset.square = s.square;
 
             container.appendChild(squareContainer);
-        });
-    }
-
-    squareReference() {
-        const squareReference = document.getElementById('square-reference');
-
-        this.boardContainer.querySelectorAll('.square').forEach(square => {
-            square.addEventListener('mouseenter', () => {
-                squareReference.textContent = square.dataset.square;
-            });
-
-            square.addEventListener('mouseleave', () => {
-                squareReference.textContent = "";
-            });
         });
     }
 }

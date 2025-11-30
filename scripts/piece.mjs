@@ -12,7 +12,7 @@ export default class Piece {
         const pImage = document.createElement('img');
         pImage.setAttribute('src', piece.image);
         pImage.setAttribute('alt', `${piece.color} ${piece.category} icon`);
-
+        
         pContainer.dataset.id = this.piece.pId;
 
         pContainer.style.transform = `translate(0px, 0px)`;
