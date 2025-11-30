@@ -16,6 +16,7 @@ body {
 #chess-board div {
     display: flex;
     aspect-ratio: 1 / 1;
+    width: 100%;
 }
 
 .dark {
