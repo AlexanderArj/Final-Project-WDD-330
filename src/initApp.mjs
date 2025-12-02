@@ -1,5 +1,5 @@
 import Board from "./board.mjs";
-import { getSquares, getPieces } from "./chessSetUp.mjs";
+import { getSquares, getPieces, getDailyPuzzle, getRandomPuzzle } from "./chessSetUp.mjs";
 import { createAllPieces } from "./piecesFactory.mjs";
 import { initialPositionAllPieces, makeMove } from "./movement.mjs";
 import { getMoves, splitMoves } from "./readMove.mjs";
@@ -22,6 +22,14 @@ export async function initApp() {
   initialPositionAllPieces(piecesData, unidadPX);
 
   const moves = await getMoves();
+
+  // daily puzzle
+
+  const dailyPuzzleMoves = await getDailyPuzzle();
+  console.log(dailyPuzzleMoves);
+
+  const randomPuzzleMoves = await getRandomPuzzle();
+  console.log(randomPuzzleMoves);
 
   const movesToPlay = splitMoves(moves);
 
