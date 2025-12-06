@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 
-export default defineConfig({
+export default defineConfig(() => ({
+  base: process.env.VITE_BASE_OVERRIDE || "/chesspuzzles/",
   server: {
     port: 3000,
   },
@@ -10,5 +11,4 @@ export default defineConfig({
   build: {
     outDir: "dist"
   }
-});
-
+}));
