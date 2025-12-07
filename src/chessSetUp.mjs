@@ -1,5 +1,5 @@
-const boardJson = import.meta.env.BASE_URL + "json/board.json";
-const piecesJson = import.meta.env.BASE_URL + "json/pieces.json";
+const boardJson = "json/board.json";
+const piecesJson = "json/pieces.json";
 
 const dailyPuzzleUrl = 'https://lichess.org/api/puzzle/daily';
 const randomPuzzleUrl = 'https://lichess.org/api/puzzle/next?angle=&difficulty=easiest&color=white';
