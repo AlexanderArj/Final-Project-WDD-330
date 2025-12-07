@@ -6,6 +6,6 @@ export async function getMoves() {
     return moves;
 }
 
-export function splitMoves(moves) { return moves.game.split(" ");}
-
-
+export function splitMoves(moves) {
+    return moves.game.split(" ");
+}

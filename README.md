@@ -1,2 +1,11 @@
 # Final-Project-WDD-330
-Project for educational purposes, not for commercial purposes.
+
+git checkout main
+
+npm run build
+git add .
+git commit -m "changes"
+git push origin main
+
+git subtree push --prefix dist origin gh-pages
+
