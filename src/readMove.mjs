@@ -1,4 +1,14 @@
 const movesJson = './json/testJson1.json';
+const testJson = './json/testJson2.json';
+
+
+export async function getTestMoves() {
+
+  const response = await fetch(testJson);
+  const moves = await response.json();
+  return moves;
+}
+
 
 export async function getMoves() {
     const response = await fetch(movesJson);

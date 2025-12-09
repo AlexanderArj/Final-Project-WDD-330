@@ -43,6 +43,8 @@ export function moveValidation(piece, destinationSquare) {
                 forward = 1;
             }
 
+            // si no hay movimiento, cambio de posicion
+
             if (rankDirection * forward <= 0) {
                 return { message: "Invalid", validMove: false };
             }
@@ -157,6 +159,7 @@ export function findPieceByPgn (piecesData, boardData, pgnArray, pcolor) {
 
     // caso enrroque
     let pieceToMove;
+    let piecesToConsider;
     let destinationSquare;
     let destinationS;
     let pawnsToConsider;
@@ -205,36 +208,34 @@ export function findPieceByPgn (piecesData, boardData, pgnArray, pcolor) {
 
     if ( piecesNotation.includes(pgnArray[0])) {
         
-        
-        const piecesToConsider = piecesData.filter(p => p.notation === pgnArray[0] && p.color === pcolor);
+        piecesToConsider = piecesData.filter(p => p.notation === pgnArray[0] && p.color === pcolor);
+        // ejemplo: todos los caballos que tiene el bando a jugar
+
+        console.log(piecesToConsider);
 
         if ( pgnArray.length === 3) {
+            // jugaada tipo Nb5
+            // este caso puede implicar el arreglo piecesToC, hay que encontrar el caballo que puede hacer el movimiento
 
             destinationSquare = boardData.find(s => s.square === (pgnArray[1].toString() + pgnArray[2].toString()));
+            // se define el destination s con los dos ultimos elementos N, b, 5  
 
             if (piecesToConsider.length > 1) {
+                // si hay mas de dos para considerar, entonces debemos validar para cada pieza con esta funcion
+                // en este punto pieceToMove es nulo
                 return getPieceFromArray(pieceToMove, piecesToConsider, destinationSquare);
             }
-        }
 
-        if(pgnArray[1].toLowerCase() != 'x') {
-
-            interior = pgnArray[1];
-
-            if (interior >= "a" && interior <= "h") {
-                fileOrRankNumber = interior.charCodeAt(0) - "a".charCodeAt(0);
-                pieceToMove = piecesData.find(p => p.notation === pgnArray[0] && p.color === pcolor && p.file === fileOrRankNumber);
-            }
-
+            // si no tiene mas un mismo tipo de pieza repetido
+            // no se valida el movimiento en este caso, asumiendo que el pgn es correcto
             else {
-                
-                const interiorNum = Number(interior);
-                if (interiorNum >= 1 && interiorNum <= 8) {
-                    fileOrRankNumber = interiorNum - 1;
-                    pieceToMove = piecesData.find(p => p.notation === pgnArray[0] && p.color === pcolor && p.rank === fileOrRankNumber);
-                }
+                pieceToMove = piecesToConsider[0];
+                return [pieceToMove, destinationSquare];
             }
+
         }
+
+        // encontrar la casilla destino primero para poder retornar la pieza segun el caso.
 
         if (last === '+' || last === '#') {
             destinationS = pgnArray[pgnArray.length - 3].toString() + pgnArray[pgnArray.length - 2].toString();
@@ -245,11 +246,40 @@ export function findPieceByPgn (piecesData, boardData, pgnArray, pcolor) {
         }
 
         destinationSquare = boardData.find( s => s.square === destinationS);
+        
+        if (!destinationSquare) { return { error: "Destination square not found", piece: pieceToMove, destinationSquare: null };}
 
-        if (!destinationSquare) {
-            return { error: "Destination square not found", piece: pieceToMove, destinationSquare: null };
+        if(pgnArray[1].toLowerCase() != 'x') {
+
+            interior = pgnArray[1];
+
+            // casos para jugadas no ambiguas, Nbd7
+            // no hay conjunto de piezas para hacer el movimiento ya que solo una lo hace, en este caso el caballo en la fila b
+
+            // 1 2 3 4 5 6 7 8
+            // 1  2  4  3  2  1  0
+
+            if (interior >= "a" && interior <= "h") {
+                fileOrRankNumber = interior.charCodeAt(0) - "a".charCodeAt(0);
+                pieceToMove = piecesData.find(p => p.notation === pgnArray[0] && p.color === pcolor && p.file === fileOrRankNumber);
+            }
+
+            else {
+                const interiorNum = Number(interior);
+                if (interiorNum >= 1 && interiorNum <= 8) {
+                    fileOrRankNumber = rankReferences(interiorNum);
+                    pieceToMove = piecesData.find(p => p.notation === pgnArray[0] && p.color === pcolor && p.rank === fileOrRankNumber);
+                }
+            }
+            
+            return [pieceToMove, destinationSquare];
+
         }
 
+        // este return es para jugadas tipo Nxd5, donde el segundo caracter es x, en teoria solo un caballo puede hacer esta jugada
+        // porque de otra manera se escribiria como Nbxd5, entonces incluso si hay mas piezas del mismo tipo la funcion getPiecefromA deberia 
+        // devolver sola la pieza que puede hacer el movimiento segun la funcion de validación
+       
         return getPieceFromArray(pieceToMove, piecesToConsider, destinationSquare);
 
     }
@@ -335,13 +365,55 @@ export function findPieceByPgn (piecesData, boardData, pgnArray, pcolor) {
 }
 
 function getPieceFromArray(pieceToMove, piecesToConsider, destinationSquare) {
+
+
+    // recibe una variable nula, pieceToMove
+    // piecesToConsider es una arreglo de piezas, por ejemplo todos los caballos blancos
+
+    
     for (let piece =0; piece < piecesToConsider.length; piece++){
+        // valida el movimiento para cada pieza del arreglo y asinga el valor a la pieza
+        // aqui hay un error por que si para mas de una pieza el movimiento es valido entonces
+        // se queda con la ultima o pieza encontrada
+        // por ejemplo un caballo en b6 y otro en f6, se queda con el ultimo encontrado sin importar
+        // si el movimiento es Nbd6
+        // para jugadas tipo Nbd6 esta funcion no puede llamarse
+
         if (moveValidation(piecesToConsider[piece], destinationSquare) === true){
             pieceToMove = piecesToConsider[piece];
-        
         } 
     }
 
     return [pieceToMove, destinationSquare];
 
+}
+
+function rankReferences (num) {
+
+    switch (num) {
+        case 1:
+            
+            return 7;
+
+        case 2:
+            return 6;
+        
+        case 3:
+            return 5;
+        
+        case 4:
+            return 4;
+        
+        case 5:
+            return 3;
+        case 6:
+            return 2;
+        case 7:
+            return 1;
+        case 8:
+            return 0;
+    
+        default:
+            return;
+    }
 }
