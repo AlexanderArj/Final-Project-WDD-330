@@ -2,7 +2,7 @@ import Board from "./board.mjs";
 import { getSquares, getPieces, getDailyPuzzle, getRandomPuzzle } from "./chessSetUp.mjs";
 import { createAllPieces } from "./piecesFactory.mjs";
 import { initialPositionAllPieces, makeMove, findPieceByPgn} from "./movement.mjs";
-import { getMoves, splitMoves, splitAlgebraicNotation, getPgnMoves, pgnEachMoveToArray} from "./readMove.mjs";
+import { getMoves, splitMoves, splitAlgebraicNotation, getPgnMoves, pgnEachMoveToArray, getTestMoves} from "./readMove.mjs";
 import { deletePiece, castling } from "./findPiece.mjs";
 
 export async function initApp() {
@@ -32,8 +32,20 @@ export async function initApp() {
   const randomPuzzleMoves = await getRandomPuzzle();
   console.log(randomPuzzleMoves);
 
+  // test
+
+  const testMoves = await getTestMoves();
+
+  const testMovesString = testMoves.game.pgn;
+
+  const testToPlay = getPgnMoves(testMovesString);
+
+  // 
+  // 
+
   const movesToPlay = splitMoves(moves);
   // console.log(movesToPlay);
+
   
 
   const pgnMoves = dailyPuzzleMoves.game.pgn;
@@ -48,12 +60,12 @@ export async function initApp() {
   
   // });
 
-  //  function sleepPgn(ms) {
-  //   return new Promise(resolve => setTimeout(resolve, ms));
-  // } 
+   function sleepPgn(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  } 
   
-  function playPgn() {
-    for (let i = 0; i < 23; i++) {
+  async function playPgn() {
+    for (let i = 0; i < testToPlay.length; i++) {
 
       let pcolor = "";
 
@@ -67,7 +79,7 @@ export async function initApp() {
         pcolor ='black';
       }
 
-      const pgnNotation = pgnEachMoveToArray(pgnToPlay[i]);
+      const pgnNotation = pgnEachMoveToArray(testToPlay[i]);
       console.log(pgnNotation);
 
       const pieceAndSquare = findPieceByPgn(piecesData, boardData, pgnNotation, pcolor);
@@ -136,7 +148,7 @@ export async function initApp() {
       //   document.getElementById('move-notation').textContent = "Checkmate!";
       // }
 
-      // await sleepPgn(2000);
+      await sleepPgn(2000);
     }
   }
 
