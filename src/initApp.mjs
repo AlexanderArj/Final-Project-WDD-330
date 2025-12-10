@@ -1,12 +1,13 @@
 import Board from "./board.mjs";
 import { getSquares, getPieces, getDailyPuzzle, getRandomPuzzle } from "./chessSetUp.mjs";
 import { createAllPieces } from "./piecesFactory.mjs";
-import { initialPositionAllPieces, makeMove, findPieceByPgn} from "./movement.mjs";
-import { getMoves, splitMoves, splitAlgebraicNotation, getPgnMoves, pgnEachMoveToArray, getTestMoves} from "./readMove.mjs";
-import { deletePiece, castling } from "./findPiece.mjs";
+import { initialPositionAllPieces, makeMove } from "./movement.mjs";
+import { findPieceByPgn } from "./findPiecePgn.mjs";
+import { getMoves, splitMoves, splitAlgebraicNotation, getPgnMoves, pgnEachMoveToArray, getTestMoves } from "./readMove.mjs";
+import { resizeBoard, sleepPgn, deletePiece } from "./utils.mjs";
+import { displayMoves, highlightMove} from "./moveNotation.mjs";
 
 export async function initApp() {
-  
   const tablero = document.getElementById('chess-board');
 
   const boardData = await getSquares();
@@ -20,85 +21,25 @@ export async function initApp() {
   await createAllPieces();
 
   initialPositionAllPieces(piecesData, unidadPX);
+  
+  window.addEventListener("resize", resizeBoard);
 
-
-function resizeBoard() {
-    const boardElement = document.querySelector("#chess-board");
-    const pieces = document.querySelectorAll(".piece");
-
-    const unidad = boardElement.clientWidth / 8;
-
-    pieces.forEach(piece => {
-        const file = Number(piece.dataset.file); 
-        const rank = Number(piece.dataset.rank); 
-        piece.style.transform = `translate(${file * unidad}px, ${rank * unidad}px)`;
-    });
-}
-
-window.addEventListener("resize", resizeBoard);
-
-resizeBoard();
-
-  const moves = await getMoves();
-  // console.log(moves);
-
-  // daily puzzle
+  resizeBoard();
 
   const dailyPuzzleMoves = await getDailyPuzzle();
-  // console.log(dailyPuzzleMoves);
-
-  const randomPuzzleMoves = await getRandomPuzzle();
-  // console.log(randomPuzzleMoves);
-
-  // test
-
-  const testMoves = await getTestMoves();
-
-  const testMovesString = testMoves.game.pgn;
-
-  const testToPlay = getPgnMoves(testMovesString);
-
-  // 
-  // 
-
-  const movesToPlay = splitMoves(moves);
-  // console.log(movesToPlay);
-
-  
-
+  console.log(dailyPuzzleMoves);
   const pgnMoves = dailyPuzzleMoves.game.pgn;
 
-  const pgnToPlay = getPgnMoves(pgnMoves);
-  // console.log(pgnToPlay);
+  const pgnMovesToPlay = getPgnMoves(pgnMoves);
 
-  // pgnToPlay.forEach(pgnNotation => {
+  displayMoves(pgnMovesToPlay);
 
-  //   pgnNotation = pgnEachMoveToArray(pgnNotation);
-  //   console.log(pgnNotation);
-  
-  // });
-
-   function sleepPgn(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  } 
-  
   async function playPgn() {
-    for (let i = 0; i < testToPlay.length; i++) {
+    for (let i = 0; i < pgnMovesToPlay.length; i++) {
+      let pcolor = i === 0 || i % 2 === 0 ? 'white' : 'black';
 
-      let pcolor = "";
-
-      if( i === 0 || i%2 === 0) {
-
-        pcolor = 'white';
-
-      }
-
-      else {
-        pcolor ='black';
-      }
-
-      const pgnNotation = pgnEachMoveToArray(testToPlay[i]);
-      // console.log(pgnNotation);
+      const pgnNotation = pgnEachMoveToArray(pgnMovesToPlay[i]);
+      console.log(pgnNotation);
 
       const pieceAndSquare = findPieceByPgn(piecesData, boardData, pgnNotation, pcolor);
       console.log(pieceAndSquare);
@@ -108,25 +49,24 @@ resizeBoard();
       let king;
       let rookToMovePgn;
 
-      if ( pieceAndSquare.length === 2) {
-
+      if (pieceAndSquare.length === 2) {
         piecePgnToMove = pieceAndSquare[0];
         finalSquare = pieceAndSquare[1];
-        
-        let enemyPiece = piecesData.find( ep => ep.file === finalSquare.file && ep.rank === finalSquare.rank && ep.color != piecePgnToMove.color);
+
+        let enemyPiece = piecesData.find(ep => ep.file === finalSquare.file && ep.rank === finalSquare.rank && ep.color !== piecePgnToMove.color);
 
         if (enemyPiece) {
           let enemyPieceContainer = document.querySelector(`[data-id="${enemyPiece.pId}"]`);
           piecesData = piecesData.filter(p => p.pId !== enemyPiece.pId);
           deletePiece(tablero, enemyPieceContainer);
-        } else { enemyPiece = null;}
+        }
 
-        // console.log(piecesData);
+        highlightMove(i);
 
         makeMove(piecePgnToMove, [finalSquare.file, finalSquare.rank], unidadPX);
 
-      }
-
+      } 
+      
       else {
         king = pieceAndSquare[0];
         rookToMovePgn = pieceAndSquare[2];
@@ -134,90 +74,9 @@ resizeBoard();
         makeMove(rookToMovePgn, [pieceAndSquare[3][0], pieceAndSquare[3][1]], unidadPX);
       }
 
-      // const move = splitAlgebraicNotation(movesToPlay[i]);
-      // const pieceSquare = move.piece;
-      // const pieceDestination = move.destinationSquare;
-
-      // const squareR = boardData.find(s => pieceSquare === s.square);
-      // const squareD = boardData.find(d => pieceDestination === d.square);
-
-      // const pieceToMove = piecesData.find( p => p.file === squareR.file && p.rank === squareR.rank);
-
-      // let enemyPiece = piecesData.find( ep => ep.file === squareD.file && ep.rank === squareD.rank && ep.color != pieceToMove.color);
-
-      // if (enemyPiece) {
-      //   let enemyPieceContainer = document.querySelector(`[data-id="${enemyPiece.pId}"]`);
-
-      //   piecesData = piecesData.filter(p => p.pId !== enemyPiece.pId);
-
-      //   deletePiece(tablero, enemyPieceContainer);
-      // } else {
-      //   enemyPiece = null;
-      // }
-
-      // makeMove(pieceToMove, [squareD.file, squareD.rank], unidadPX);
-
-      // if (pieceToMove.category === 'king') {
-      //   const rookToMove = castling(piecesData, squareD.file, squareD.rank);
-      //   makeMove(rookToMove, [3, 7], unidadPX);
-      // }
-
-      // if (i === movesToPlay.length - 1) {
-      //   document.getElementById('move-notation').textContent = "Checkmate!";
-      // }
-
       await sleepPgn(2000);
     }
   }
 
   playPgn();
- 
-
-
-
-
-  // function sleep(ms) {
-  //   return new Promise(resolve => setTimeout(resolve, ms));
-  // } 
-
-  // async function play() {
-  //   for (let i = 0; i < movesToPlay.length; i++) {
-
-  //     const move = splitAlgebraicNotation(movesToPlay[i]);
-  //     const pieceSquare = move.piece;
-  //     const pieceDestination = move.destinationSquare;
-
-  //     const squareR = boardData.find(s => pieceSquare === s.square);
-  //     const squareD = boardData.find(d => pieceDestination === d.square);
-
-  //     const pieceToMove = piecesData.find( p => p.file === squareR.file && p.rank === squareR.rank);
-
-  //     let enemyPiece = piecesData.find( ep => ep.file === squareD.file && ep.rank === squareD.rank && ep.color != pieceToMove.color);
-
-  //     if (enemyPiece) {
-  //       let enemyPieceContainer = document.querySelector(`[data-id="${enemyPiece.pId}"]`);
-
-  //       piecesData = piecesData.filter(p => p.pId !== enemyPiece.pId);
-
-  //       deletePiece(tablero, enemyPieceContainer);
-  //     } else {
-  //       enemyPiece = null;
-  //     }
-
-  //     makeMove(pieceToMove, [squareD.file, squareD.rank], unidadPX);
-
-  //     if (pieceToMove.category === 'king') {
-  //       const rookToMove = castling(piecesData, squareD.file, squareD.rank);
-  //       makeMove(rookToMove, [3, 7], unidadPX);
-  //     }
-
-  //     if (i === movesToPlay.length - 1) {
-  //       document.getElementById('move-notation').textContent = "Checkmate!";
-  //     }
-
-  //     await sleep(2000);
-  //   }
-  // }
-
-  // play();
 }

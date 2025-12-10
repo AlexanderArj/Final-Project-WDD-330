@@ -4,27 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess Board Practice</title>
+    <title>Chess Puzzles Master</title>
     <meta name="description" content="A Chess board">
 
     <link rel="icon" href="images/favicon.ico">
     <link rel="stylesheet" href="src/styles/base.css">
-    <link rel="stylesheet" href="src/styles/start.css">
     <script type="module" src="src/main.js"></script>
 </head>
 
 <body>
     <div class="main-container">
-        <header><h1>Chess Board</h1></header>
+        <header><h1>ChessPuzzles Master</h1></header>
         <audio id="audio" src="assets/chessmaster.mp3" loop></audio>
 
-        <div id="startModal">button id="startButton">Start</button></div>
+        <div id="startModal">
+            <button id="startButton">Start</button>
+        </div>
 
         <main>
             <section id="chess-board"></section>
-            <section id="move-notation"></section>
         </main>
-
+        
+        <section id="move-notation">Move Notation</section>
         <button id="volumeBtn"><img id="volumeIcon" src="images/volume.svg" alt="Volume control button"></button>
 
         <div id="aside-section">
@@ -32,7 +33,10 @@
             <aside>Games Selection</aside>
         </div>
 
-        <footer>Alexander Romero</footer>
+        <footer>
+            &copy; 2024 Alexander Romero.
+            <p>BYU WDD 300 - Project</p>
+        </footer>
     </div>
 </body>
 

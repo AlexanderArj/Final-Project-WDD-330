@@ -1,56 +1,149 @@
-html, body {
+:root {
+    --main-color : #E8E6E1;
+    --sec-color: #2F4F60;
+    --bg-chess-color: #e3cbae;
+    --border-chessb: #804f4fdc;
+    --dark-squares: #46494C;
+    --white-squares: #C5C3C6;
+    --text-white: #eff3f7;
+    --bg-sec-color: #A47148;
+    --footer-bg: #15181D;
+}
+
+* {
     margin: 0;
     padding: 0;
-    height: 100%;
+    box-sizing: border-box; 
+}
+
+html, body {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
 }
 
 body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
+    background-color: var(--main-color);
+}
+
+h1 {
+    margin-top: 15px;
+}
+
+.main-container {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    gap: 10px;
+
+    grid-template-columns: auto 2fr 1fr;
+    grid-template-areas: 
+        ".     header    ."
+        "aside main moveNotation"
+        ". footer volumeBtn";
 }
 
 header {
+    grid-area: header;
     margin-top: 10px;
     text-align: center;
+    padding: 10px;
+
+    border-bottom: 2px solid var(--nebula-purple);
 }
 
 main {
+    grid-area: main;
+    padding: 10px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: var(--bg-chess-color);
+    border: solid 3px #aca296;
+
+}
+
+#aside-section {
+    grid-area: aside;
+    padding: 10px;
+
+    border-right: 2px solid;
+    background-color: var(--sec-color);
+    color: var(--text-white);
+    border-radius: 5px;
+}
+
+#move-notation {
+
+    grid-area: moveNotation;
+    border-left: 2px solid black;
+    width: 90%;
+    height: 100%;
+    text-align: left;
+    overflow-y: auto;
+    background-color: var(--sec-color);
+    color: var(--text-white);
+    padding: 15px;
+    border: 3px solid var(--bg-sec-color);
+}
+
+.moves-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+}
+
+.move-number {
+    width: 35px;
+    text-align: right;
+    padding-right: 6px;
+    font-weight: bold;
+    color: #fbe395;
+}
+
+.move {
+    padding: 4px 6px;
+    cursor: default;
+}
+
+.move-white {
+    text-align: left;
 }
 
 #chess-board {
-    width: min(90vw, 90vh);
+    width: 70vh;
+    height: 70vh;
+    max-width: 600px;
+    max-height: 600px;
     aspect-ratio: 1 / 1;
-
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
-
-    border: solid 10px #804f4fdc;
     position: relative;
     overflow: hidden;
-
+    margin-bottom: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    border: solid 10px var(--border-chessb);
+
 }
 
 .dark {
-    background-color: #46494C;
+     background-color: var(--dark-squares);
 }
 
 .white {
-    background-color: #C5C3C6;
+    background-color: var(--white-squares);
 }
 
 .piece {
     position: absolute;
     width: 12.5%;
     height: auto;
-
     transition: transform 0.25s ease-out;
 }
 
@@ -58,30 +151,89 @@ main {
     width: 100%;
     height: auto;
     display: block;
-    margin: 0;
-    padding: 0;
+}
+
+.current-move {
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-weight: bold;
+    background-color: rgba(255, 174, 0, 0.776);
 }
 
 #volumeBtn {
-    background: none;
-    border: none;
+    grid-area: volumeBtn;
+
+    display: flex;
+    justify-self: center;
+    align-self: center;
+
+    width: 32px;
+    height: 32px;
+    border-radius: 5px;
+
+    border: 1px solid var(--metal-dark);
     cursor: pointer;
-    margin-top: 20px;
+
+    margin-bottom: 50px;
+
+    transition: transform 0.2s;
+}
+
+#volumeBtn:hover {
+    transform: scale(1.1);
 }
 
 #volumeIcon {
     width: 32px;
     height: 32px;
 }
+#startModal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(5, 10, 25, 0.85);
+
+    transition: opacity 0.8s ease;
+    z-index: 1;
+    background-image: url("/images/chessmaster-king.jpeg"); 
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+#startModal.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#startButton {
+    padding: 18px 40px;
+    font-size: 22px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    transition: transform 0.2s;
+}
+
+#startButton:hover {
+    transform: scale(1.05);
+}
 
 footer {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #555;
+    grid-area: footer;
+    text-align: center;
+    padding: 5px;
+    background-color: var(--footer-bg);
+    color: var(--text-white);
+    border-radius: 5px;
+
 }
 
 @media (max-width: 600px) {
-
     header h1 {
         font-size: 1.5rem;
     }
