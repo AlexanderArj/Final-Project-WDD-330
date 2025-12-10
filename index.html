@@ -14,25 +14,26 @@
 </head>
 
 <body>
-    <header>
-        <h1>Chess Board</h1>
-    </header>
+    <div class="main-container">
+        <header><h1>Chess Board</h1></header>
+        <audio id="audio" src="assets/chessmaster.mp3" loop></audio>
 
-    <audio id="audio" src="assets/chessmaster.mp3" loop></audio>
+        <div id="startModal">button id="startButton">Start</button></div>
 
-    <div id="startModal">   
-        <button id="startButton">Start</button>
+        <main>
+            <section id="chess-board"></section>
+            <section id="move-notation"></section>
+        </main>
+
+        <button id="volumeBtn"><img id="volumeIcon" src="images/volume.svg" alt="Volume control button"></button>
+
+        <div id="aside-section">
+            <section>Quotes section</section>
+            <aside>Games Selection</aside>
+        </div>
+
+        <footer>Alexander Romero</footer>
     </div>
-
-    <main>
-        <section id="chess-board"></section>
-        <p id="move-notation"></p>
-    </main>
-
-    <button id="volumeBtn">
-        <img id="volumeIcon" src="images/volume.svg" alt="Volume control button">
-    </button>
-
-    <footer>Alexander Romero</footer>
 </body>
+
 </html>
