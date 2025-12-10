@@ -21,16 +21,34 @@ export async function initApp() {
 
   initialPositionAllPieces(piecesData, unidadPX);
 
+
+function resizeBoard() {
+    const boardElement = document.querySelector("#chess-board");
+    const pieces = document.querySelectorAll(".piece");
+
+    const unidad = boardElement.clientWidth / 8;
+
+    pieces.forEach(piece => {
+        const file = Number(piece.dataset.file); 
+        const rank = Number(piece.dataset.rank); 
+        piece.style.transform = `translate(${file * unidad}px, ${rank * unidad}px)`;
+    });
+}
+
+window.addEventListener("resize", resizeBoard);
+
+resizeBoard();
+
   const moves = await getMoves();
   // console.log(moves);
 
   // daily puzzle
 
   const dailyPuzzleMoves = await getDailyPuzzle();
-  console.log(dailyPuzzleMoves);
+  // console.log(dailyPuzzleMoves);
 
   const randomPuzzleMoves = await getRandomPuzzle();
-  console.log(randomPuzzleMoves);
+  // console.log(randomPuzzleMoves);
 
   // test
 
@@ -51,7 +69,7 @@ export async function initApp() {
   const pgnMoves = dailyPuzzleMoves.game.pgn;
 
   const pgnToPlay = getPgnMoves(pgnMoves);
-  console.log(pgnToPlay);
+  // console.log(pgnToPlay);
 
   // pgnToPlay.forEach(pgnNotation => {
 
@@ -80,7 +98,7 @@ export async function initApp() {
       }
 
       const pgnNotation = pgnEachMoveToArray(testToPlay[i]);
-      console.log(pgnNotation);
+      // console.log(pgnNotation);
 
       const pieceAndSquare = findPieceByPgn(piecesData, boardData, pgnNotation, pcolor);
       console.log(pieceAndSquare);
@@ -103,7 +121,7 @@ export async function initApp() {
           deletePiece(tablero, enemyPieceContainer);
         } else { enemyPiece = null;}
 
-        console.log(piecesData);
+        // console.log(piecesData);
 
         makeMove(piecePgnToMove, [finalSquare.file, finalSquare.rank], unidadPX);
 
